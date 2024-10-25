@@ -1,52 +1,46 @@
 const ErrorHandlerMiddleWares = require("../middlewares/ErrorHandlerMiddleWares");
-const OurServiceRepository = require("../repositories/OurServiceRepository")
+const OurServiceRepository = require("../repositories/OurServiceRepository");
+const IsResponseTrueOrFalse = require("../utils/IsResponseTrueOrFalse");
 
 
-
+// service layeri yaradiriq. biznesi burada teyin edirik.
 class OurServicesService {
-
-    async getAllOurService(){
+    // asinxron olaraq service sorgu gonderirik
+    // gelen sorgunu response deyisenine teyin edirik
+    // gelen deyeri  isResponseTrueOrFalse classinin check metoduna yonlendiririk.... 
+    // check metodu response deyiseninin deyerinden asili olaraq  geriye Ya oz custom errorumuzu qaytarir . ve ya sadece responsenin ozunu.
+    async getAllOurService() {
         const response = await OurServiceRepository.getAllService()
-        if(!response)
-            throw ErrorHandlerMiddleWares.newError("Services not found");
-            
-        return response
+        return IsResponseTrueOrFalse.check(response, "Service not found")
     }
 
-    async createService (data){
+    async createService(data) {
         const response = await OurServiceRepository.createService(data)
-        if(!response)
-            throw ErrorHandlerMiddleWares.newError("unsuccessfully created");
 
-        return response
-            
+        return IsResponseTrueOrFalse.check(response, "unsuccessfully created")
+
+
     }
 
-    async getOurServiceById (id){
-        const response  = await OurServiceRepository.getOurServiceById(id)
-        if(!response)
-            throw ErrorHandlerMiddleWares.newError("services not found");
+    async getOurServiceById(id) {
+        const response = await OurServiceRepository.getOurServiceById(id)
 
-        return response
+        return IsResponseTrueOrFalse.check(response, "services not found")
+
     }
-    async updateOurServiceById(id,data){
-        const response = await OurServiceRepository.updateOuServiceById(id,data)
-        
-        if(!response)
-            throw ErrorHandlerMiddleWares.newError("updated unsuccessfully");
+    async updateOurServiceById(id, data) {
+        const response = await OurServiceRepository.updateOuServiceById(id, data)
 
-        return response
+        return IsResponseTrueOrFalse.check(response, "updated unsuccessfully")
+
     }
 
-    async deleteOurServiceById (id){
-        const response =  await OurServiceRepository.deleteOurServiceById(id);
-    
-        if(!response)
-            throw ErrorHandlerMiddleWares.newError("Deleted unsuccessfully");
+    async deleteOurServiceById(id) {
+        const response = await OurServiceRepository.deleteOurServiceById(id);
 
-        return response
+        return IsResponseTrueOrFalse.check(response, "Deleted unsuccessfully")
     }
 }
- 
 
+    // exportu new ile edirik  cunki basqa yerde bu classin metodlarini cagirdigimiz zaman new etmeyek. bir basa yeni class olaraq export olur.
 module.exports = new OurServicesService()
